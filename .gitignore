@@ -1,0 +1,23 @@
+# Compiled outputs
+Main
+Main.exe
+test_runner
+test_runner.exe
+*.o
+*.obj
+*.out
+*.exe
+
+# Temporary and editor files
+*.tmp
+*.swp
+*~
+.vscode/
+.idea/
+.vs/
+
+# External reference demo (not part of the submission)
+Demo.cpp
+Demo(1).cpp
+demo.cpp
+demo(1).cpp
