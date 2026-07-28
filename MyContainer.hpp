@@ -10,7 +10,7 @@
 #include <stdexcept>
 #include <vector>
 
-namespace ariel {
+namespace mycontainer {
 
 // Stores values in insertion order.
 // Its iterators provide different views without rearranging the stored values.
@@ -111,6 +111,6 @@ public:
     }
 };
 
-}  // namespace ariel
+}  // namespace mycontainer
 
 #endif

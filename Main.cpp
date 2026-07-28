@@ -21,13 +21,13 @@ void printTraversal(const char* label, Iterator current, const Iterator& end) {
 
 /** Demonstrates the container API and all traversal orders. */
 int main() {
-    ariel::MyContainer<> defaultContainer;
+    mycontainer::MyContainer<> defaultContainer;
     defaultContainer.add(10);
     defaultContainer.addElement(20);
     defaultContainer.remove(10);
     std::cout << "Default container after add/remove: " << defaultContainer << '\n';
 
-    ariel::MyContainer<int> numbers;
+    mycontainer::MyContainer<int> numbers;
     for (int value : {1, 2, 3, 4, 5}) {
         numbers.addElement(value);
     }

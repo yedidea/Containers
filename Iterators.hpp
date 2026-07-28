@@ -10,7 +10,7 @@
 #include <utility>
 #include <vector>
 
-namespace ariel {
+namespace mycontainer {
 
 // Distinguishes traversal types so different orders do not compare as equal.
 enum class IteratorOrder {
@@ -343,6 +343,6 @@ public:
     }
 };
 
-}  // namespace ariel
+}  // namespace mycontainer
 
 #endif

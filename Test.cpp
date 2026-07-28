@@ -9,7 +9,7 @@
 #include <string>
 #include <vector>
 
-using ariel::MyContainer;
+using mycontainer::MyContainer;
 
 /// Collects a traversal into a vector for comparison.
 template<typename Iterator>
