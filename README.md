@@ -1,7 +1,7 @@
 
 # MyContainer
 
-`MyContainer` is a C++17 template container assignment in the `ariel` namespace. It stores values in insertion order and exposes six read-only traversal orders without rearranging the stored data.
+`MyContainer` is a C++17 template container. It stores values in insertion order and exposes six read-only traversal orders without rearranging the stored data.
 
 ## Files
 
@@ -38,5 +38,3 @@ make test
 make valgrind
 make clean
 ```
-
-`make valgrind` requires Valgrind to be installed. The external demo file is only an API reference; it is not part of this project, its build, or its tests.
