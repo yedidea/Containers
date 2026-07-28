@@ -19,7 +19,7 @@ void printTraversal(const char* label, Iterator current, const Iterator& end) {
     std::cout << '\n';
 }
 
-/** Demonstrates the container API and all traversal orders. */
+/** Demonstrates the container and all traversal orders. */
 int main() {
     mycontainer::MyContainer<> defaultContainer;
     defaultContainer.add(10);
