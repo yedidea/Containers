@@ -12,7 +12,7 @@
 
 namespace ariel {
 
-// Identifies the traversal used when comparing iterators.
+// Distinguishes traversal types so different orders do not compare as equal.
 enum class IteratorOrder {
     Ascending,
     Descending,
@@ -22,7 +22,8 @@ enum class IteratorOrder {
     MiddleOut
 };
 
-// Implements the shared behavior of all read-only traversal iterators.
+// Holds the state and operators shared by all read-only iterators.
+// Traversal indices change the visit order without moving the stored values.
 template<typename T>
 class IteratorBase {
 public:
@@ -32,6 +33,7 @@ public:
     using pointer = const T*;
     using reference = const T&;
 
+    // Returns the current source value and rejects end iterators.
     reference operator*() const {
         if (position_ >= traversal_.size()) {
             throw std::out_of_range("cannot dereference an end iterator");
@@ -43,6 +45,7 @@ public:
         return &operator*();
     }
 
+    // Advances to the next planned index without moving past the end.
     IteratorBase& operator++() {
         if (position_ < traversal_.size()) {
             ++position_;
@@ -56,6 +59,7 @@ public:
         return previous;
     }
 
+    // Equality requires the same container, traversal type, and position.
     bool operator==(const IteratorBase& other) const noexcept {
         return elements_ == other.elements_ &&
                order_ == other.order_ &&
@@ -67,9 +71,11 @@ public:
     }
 
 protected:
+    // Creates an unbound default iterator for one traversal type.
     explicit IteratorBase(IteratorOrder order) noexcept
         : elements_(nullptr), traversal_(), position_(0), order_(order) {}
 
+    // Binds an iterator to its source values and planned visit order.
     IteratorBase(const std::vector<T>& elements,
                  std::vector<std::size_t> traversal,
                  std::size_t position,
@@ -80,15 +86,19 @@ protected:
           order_(order) {}
 
 private:
+    // Points to container storage, which must outlive the iterator.
     const std::vector<T>* elements_;
+    // Stores source indices in the order they should be visited.
     std::vector<std::size_t> traversal_;
+    // Tracks the current position inside the traversal list.
     std::size_t position_;
+    // Records the traversal type for safe iterator comparisons.
     IteratorOrder order_;
 };
 
 namespace detail {
 
-// Builds a stable value-sorted list of source indices.
+// Sorts source indices by value while keeping equal values in insertion order.
 template<typename T>
 std::vector<std::size_t> ascendingIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -100,7 +110,7 @@ std::vector<std::size_t> ascendingIndices(const std::vector<T>& elements) {
     return indices;
 }
 
-// Builds a stable reverse-value-sorted list of source indices.
+// Sorts source indices from largest to smallest with stable equal values.
 template<typename T>
 std::vector<std::size_t> descendingIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -112,7 +122,7 @@ std::vector<std::size_t> descendingIndices(const std::vector<T>& elements) {
     return indices;
 }
 
-// Alternates between the smallest and largest remaining values.
+// Takes indices from both ends of the ascending order: low, high, low, high.
 template<typename T>
 std::vector<std::size_t> sideCrossIndices(const std::vector<T>& elements) {
     const std::vector<std::size_t> ascending = ascendingIndices(elements);
@@ -137,7 +147,7 @@ std::vector<std::size_t> sideCrossIndices(const std::vector<T>& elements) {
     return result;
 }
 
-// Builds indices in the original insertion order.
+// Lists source indices in their original insertion order.
 template<typename T>
 std::vector<std::size_t> insertionIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -145,7 +155,7 @@ std::vector<std::size_t> insertionIndices(const std::vector<T>& elements) {
     return indices;
 }
 
-// Builds indices in reverse insertion order.
+// Lists source indices from the last inserted value to the first.
 template<typename T>
 std::vector<std::size_t> reverseIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices;
@@ -156,7 +166,8 @@ std::vector<std::size_t> reverseIndices(const std::vector<T>& elements) {
     return indices;
 }
 
-// Starts at the middle, then alternates left and right.
+// Starts at size / 2, then alternates left and right.
+// For an even size, size / 2 selects the upper middle index.
 template<typename T>
 std::vector<std::size_t> middleOutIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices;
@@ -180,7 +191,9 @@ std::vector<std::size_t> middleOutIndices(const std::vector<T>& elements) {
 
 }  // namespace detail
 
-// Traverses values from smallest to largest.
+// End iterators skip the index list because comparison only needs the final position.
+
+// Read-only iterator that visits values from smallest to largest.
 template<typename T>
 class AscendingOrder : public IteratorBase<T> {
 public:
@@ -205,7 +218,7 @@ public:
     }
 };
 
-// Traverses values from largest to smallest.
+// Read-only iterator that visits values from largest to smallest.
 template<typename T>
 class DescendingOrder : public IteratorBase<T> {
 public:
@@ -230,7 +243,7 @@ public:
     }
 };
 
-// Alternates between the lowest and highest remaining values.
+// Read-only iterator that alternates between low and high sorted values.
 template<typename T>
 class SideCrossOrder : public IteratorBase<T> {
 public:
@@ -255,7 +268,7 @@ public:
     }
 };
 
-// Traverses values in reverse insertion order.
+// Read-only iterator that visits values in reverse insertion order.
 template<typename T>
 class ReverseOrder : public IteratorBase<T> {
 public:
@@ -280,7 +293,7 @@ public:
     }
 };
 
-// Traverses values in their original insertion order.
+// Read-only iterator that visits values in their original insertion order.
 template<typename T>
 class Order : public IteratorBase<T> {
 public:
@@ -305,7 +318,7 @@ public:
     }
 };
 
-// Traverses from the middle, then alternates left and right.
+// Read-only iterator that starts in the middle, then alternates left and right.
 template<typename T>
 class MiddleOutOrder : public IteratorBase<T> {
 public:

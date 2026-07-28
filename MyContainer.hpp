@@ -12,19 +12,23 @@
 
 namespace ariel {
 
-// Stores values in insertion order and provides several read-only traversals.
+// Stores values in insertion order.
+// Its iterators provide different views without rearranging the stored values.
+// Adding or removing values invalidates existing iterators.
 template<typename T = int>
 class MyContainer {
 private:
+    // Owns the values in the order they were added.
     std::vector<T> elements;
 
 public:
+    // Adds a new value after the existing elements.
     void addElement(const T& value) {
         elements.push_back(value);
     }
 
+    // Removes every matching value and throws if no match exists.
     void removeElement(const T& value) {
-        // Remove every matching value while keeping the remaining order.
         const auto firstRemoved = std::remove(elements.begin(), elements.end(), value);
         if (firstRemoved == elements.end()) {
             throw std::runtime_error("value does not exist in the container");
@@ -44,7 +48,7 @@ public:
         removeElement(value);
     }
 
-    // Creates begin and end iterators for each supported traversal order.
+    // Begin iterators build a visit order; end iterators mark its final position.
     AscendingOrder<T> begin_ascending_order() const {
         return AscendingOrder<T>(elements);
     }
@@ -93,7 +97,7 @@ public:
         return MiddleOutOrder<T>(elements, true);
     }
 
-    // Prints the values in insertion order.
+    // Writes the values in insertion order using the format [a, b, c].
     friend std::ostream& operator<<(std::ostream& output,
                                     const MyContainer& container) {
         output << '[';
