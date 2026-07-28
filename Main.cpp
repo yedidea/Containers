@@ -3,6 +3,7 @@
 
 #include <iostream>
 
+/** Prints every value produced by a traversal. */
 template<typename Iterator>
 void printTraversal(const char* label, Iterator current, const Iterator& end) {
     std::cout << label << ": ";
@@ -18,6 +19,7 @@ void printTraversal(const char* label, Iterator current, const Iterator& end) {
     std::cout << '\n';
 }
 
+/** Demonstrates the container API and all traversal orders. */
 int main() {
     ariel::MyContainer<> defaultContainer;
     defaultContainer.add(10);

@@ -11,6 +11,7 @@
 
 using ariel::MyContainer;
 
+/// Collects a traversal into a vector for comparison.
 template<typename Iterator>
 std::vector<typename Iterator::value_type> collect(Iterator current,
                                                    const Iterator& end) {
@@ -22,6 +23,7 @@ std::vector<typename Iterator::value_type> collect(Iterator current,
     return values;
 }
 
+/// Converts a container to its printed representation.
 template<typename T>
 std::string printed(const MyContainer<T>& container) {
     std::ostringstream output;

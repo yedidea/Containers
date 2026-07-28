@@ -12,6 +12,7 @@
 
 namespace ariel {
 
+// Identifies the traversal used when comparing iterators.
 enum class IteratorOrder {
     Ascending,
     Descending,
@@ -21,6 +22,7 @@ enum class IteratorOrder {
     MiddleOut
 };
 
+// Implements the shared behavior of all read-only traversal iterators.
 template<typename T>
 class IteratorBase {
 public:
@@ -86,6 +88,7 @@ private:
 
 namespace detail {
 
+// Builds a stable value-sorted list of source indices.
 template<typename T>
 std::vector<std::size_t> ascendingIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -97,6 +100,7 @@ std::vector<std::size_t> ascendingIndices(const std::vector<T>& elements) {
     return indices;
 }
 
+// Builds a stable reverse-value-sorted list of source indices.
 template<typename T>
 std::vector<std::size_t> descendingIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -108,6 +112,7 @@ std::vector<std::size_t> descendingIndices(const std::vector<T>& elements) {
     return indices;
 }
 
+// Alternates between the smallest and largest remaining values.
 template<typename T>
 std::vector<std::size_t> sideCrossIndices(const std::vector<T>& elements) {
     const std::vector<std::size_t> ascending = ascendingIndices(elements);
@@ -132,6 +137,7 @@ std::vector<std::size_t> sideCrossIndices(const std::vector<T>& elements) {
     return result;
 }
 
+// Builds indices in the original insertion order.
 template<typename T>
 std::vector<std::size_t> insertionIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices(elements.size());
@@ -139,6 +145,7 @@ std::vector<std::size_t> insertionIndices(const std::vector<T>& elements) {
     return indices;
 }
 
+// Builds indices in reverse insertion order.
 template<typename T>
 std::vector<std::size_t> reverseIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices;
@@ -149,6 +156,7 @@ std::vector<std::size_t> reverseIndices(const std::vector<T>& elements) {
     return indices;
 }
 
+// Starts at the middle, then alternates left and right.
 template<typename T>
 std::vector<std::size_t> middleOutIndices(const std::vector<T>& elements) {
     std::vector<std::size_t> indices;
@@ -172,6 +180,7 @@ std::vector<std::size_t> middleOutIndices(const std::vector<T>& elements) {
 
 }  // namespace detail
 
+// Traverses values from smallest to largest.
 template<typename T>
 class AscendingOrder : public IteratorBase<T> {
 public:
@@ -196,6 +205,7 @@ public:
     }
 };
 
+// Traverses values from largest to smallest.
 template<typename T>
 class DescendingOrder : public IteratorBase<T> {
 public:
@@ -220,6 +230,7 @@ public:
     }
 };
 
+// Alternates between the lowest and highest remaining values.
 template<typename T>
 class SideCrossOrder : public IteratorBase<T> {
 public:
@@ -244,6 +255,7 @@ public:
     }
 };
 
+// Traverses values in reverse insertion order.
 template<typename T>
 class ReverseOrder : public IteratorBase<T> {
 public:
@@ -268,6 +280,7 @@ public:
     }
 };
 
+// Traverses values in their original insertion order.
 template<typename T>
 class Order : public IteratorBase<T> {
 public:
@@ -292,6 +305,7 @@ public:
     }
 };
 
+// Traverses from the middle, then alternates left and right.
 template<typename T>
 class MiddleOutOrder : public IteratorBase<T> {
 public:
