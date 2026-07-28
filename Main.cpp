@@ -28,7 +28,7 @@ int main() {
     std::cout << "Default container after add/remove: " << defaultContainer << '\n';
 
     ariel::MyContainer<int> numbers;
-    for (int value : {7, 15, 6, 1, 2}) {
+    for (int value : {1, 2, 3, 4, 5}) {
         numbers.addElement(value);
     }
 
